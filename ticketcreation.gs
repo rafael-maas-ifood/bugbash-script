@@ -4,8 +4,8 @@ var URL = 'https://'+JIRA_INSTANCE+'.atlassian.net/rest/api/2/issue'
 var CREATED_STATUS = 'created' // we will used this field to prevent creating a duplicated ticket
 var REQUESTER_EMAIL = <EMAIL_THAT_WILL_BE_USED_TO_SEND_THE_TICKET_URL>
 var SQUAD = <YOUR_SQUAD_NAME>
-var COLUMN_TICKET_STATUS = 'L'// this value is based on the arrangement of columns in the spreadsheet
 var COLUMN_TICKET_URL = 'K' // this value is based on the arrangement of columns in the spreadsheet
+var COLUMN_TICKET_STATUS = 'L'// this value is based on the arrangement of columns in the spreadsheet
 
 function createIssue()
 {
@@ -13,7 +13,7 @@ function createIssue()
   var rows = activeSheet.getDataRange().getValues()
   
   for (var i = 1; i < rows.length; i++) {
-    if(rows[i][12] != CREATED_STATUS){
+    if(rows[i][11] != CREATED_STATUS){
       createTicket(rows[i],i+1)
     }
   }
@@ -79,18 +79,13 @@ function createTicket(row, position){
   var dataAll = JSON.parse(response.getContentText())
   var issueKey = dataAll.key
   
-  changeTicketUrl('https://'+JIRA_INSTANCE+'.atlassian.net/browse/'+ issueKey, position)
-  changeTicketStatus(CREATED_STATUS,position)
-  // If you dont want to received a email about this ticket creation, just comment the line bellow
+  changeColumn('https://'+JIRA_INSTANCE+'.atlassian.net/browse/'+ issueKey, COLUMN_TICKET_URL+position)
+  changeColumn(CREATED_STATUS,COLUMN_TICKET_STATUS+position)
   sendEmail(issueKey)
 }
 
-function changeTicketUrl(url,position){
-  SpreadsheetApp.getActiveSheet().getRange(COLUMN_TICKET_URL+position).setValue(url) 
-}
-
-function changeTicketStatus(status, position){
-  SpreadsheetApp.getActiveSheet().getRange(COLUMN_TICKET_STATUS+position).setValue(status) 
+function changeColumn(value,position){
+  SpreadsheetApp.getActiveSheet().getRange(position).setValue(value) 
 }
 
 function sendEmail(issueKey){
