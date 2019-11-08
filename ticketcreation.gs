@@ -4,8 +4,8 @@ var URL = 'https://'+JIRA_INSTANCE+'.atlassian.net/rest/api/2/issue'
 var CREATED_STATUS = 'created' // we will used this field to prevent creating a duplicated ticket
 var REQUESTER_EMAIL = <EMAIL_THAT_WILL_BE_USED_TO_SEND_THE_TICKET_URL>
 var SQUAD = <YOUR_SQUAD_NAME>
-var COLUMN_TICKET_URL = 'K' // this value is based on the arrangement of columns in the spreadsheet
-var COLUMN_TICKET_STATUS = 'L'// this value is based on the arrangement of columns in the spreadsheet
+var COLUMN_TICKET_URL = 'L' // this value is based on the arrangement of columns in the spreadsheet
+var COLUMN_TICKET_STATUS = 'M'// this value is based on the arrangement of columns in the spreadsheet
 
 function createIssue()
 {
@@ -13,7 +13,7 @@ function createIssue()
   var rows = activeSheet.getDataRange().getValues()
   
   for (var i = 1; i < rows.length; i++) {
-    if(rows[i][11] != CREATED_STATUS){
+    if(rows[i][12] != CREATED_STATUS){
       createTicket(rows[i],i+1)
     }
   }
@@ -23,17 +23,18 @@ function createTicket(row, position){
   Logger.log("Row: " + row)
   var userName = row[0] //A
   var summary = row[1] //B
-  var bugDescription = row[2]//C
-  var print = row[3]//D
-  var expected= row[4];//E
-  var type = row[5]//F
-  var priority= row[6];//G
-  var category= row[7];//H
-  var appVersion= row[8];//I
-  var platform= row[9];//J
-  var ticketUrl= row[10];//K
-  var ticketStatus= row[11];//L
-  var ticketData = 
+  var squad = row[2]//C
+  var bugDescription = row[3]//D
+  var print = row[4]//E
+  var expected= row[5];//F
+  var type = row[6]//G
+  var priority= row[7];//H
+  var category= row[8];//I
+  var appVersion= row[9];//J
+  var platform= row[10];//K
+  var ticketUrl= row[11];//L
+  var ticketStatus= row[12];//M
+   var ticketData = 
   {
     "fields": {
       "project":{ 
@@ -52,8 +53,8 @@ function createTicket(row, position){
       "versions": [{"name": appVersion}],
       // The following custom fields are for the various strings and are simple text fields in JIRA
       // You can find all the custom fields by looking here: https://<YOUR_JIRA_INSTANCE>.atlassian.net/rest/api/latest/field/
-      // Best way to find all fields supported in a ticket is looking for a real ticket: https://<YOUR_JIRA_INSTANCE>.atlassian.net/rest/api/3/issue/<ticket_id>
-      "customfield_13503": {"value": SQUAD}
+      // Best way to find all fields supported in a ticket is looking here: https://rwondemand.atlassian.net/rest/api/3/issue/<ticket_id>
+      "customfield_13503": {"value": CONSUMER_SQUAD}
      }
   }
   
